@@ -6,10 +6,19 @@ endif
 
 call plug#begin('~/.vim/bundle')
 Plug 'junegunn/vim-plug'
+
+" Required
+Plug 'Shougo/unite.vim'
+
+" Visuals
+Plug 'dracula/vim'
+Plug 'Yggdroot/indentLine'
+
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-abolish'
+Plug 'tpope/vim-commentary'
 Plug 'tommcdo/vim-exchange'
 Plug 'kien/ctrlp.vim'
 Plug 'godlygeek/tabular'
@@ -18,11 +27,35 @@ Plug 'terryma/vim-multiple-cursors'
 Plug 'raimondi/delimitmate'
 call plug#end()
 
+set fileencodings+=utf-8
+set encoding=utf-8
+
 syntax enable
-let g:solarized_termcolors=256
-colorscheme solarized
+" let g:solarized_termcolors=256
 set background=dark
 
+" Configuration
+
+" Theme: Dracula
+color dracula
+
+" vim-airline
+let g:airline#extensions#tabline#enabled=1
+let g:airline_powerline_fonts=1
+set laststatus=2
+
+" indentLine
+let g:indentLine_enabled = 1
+let g:indentLine_char = "⟩"
+
+" Share system clipboard ("+) and unnamed ("") registers
+" http://vimcasts.org/episodes/accessing-the-system-clipboard-from-vim/
+" http://vimcasts.org/blog/2013/11/getting-vim-with-clipboard-support/
+set clipboard=unnamed
+if has('unnamedplus')
+  set clipboard=unnamed,unnamedplus
+endif
+set go+=a
 "Include some of the neovim defaults, others below
 set autoindent
 set autoread
@@ -34,12 +67,24 @@ set formatoptions=tcqj
 set history=10000
 set laststatus=2
 set tabpagemax=50
-set ttyfast
+
+" taken from https://www.johnhawthorn.com/2012/09/vi-escape-delays/
+set timeoutlen=1000 ttimeoutlen=10
 
 " Change the shape of the cursor in different modes, as per: http://vim.wikia.com/wiki/Change_cursor_shape_in_different_modes
 let &t_SI = "\<Esc>]50;CursorShape=1\x7"
 let &t_SR = "\<Esc>]50;CursorShape=2\x7"
 let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+
+if exists('$TMUX')
+  let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+  let &t_SR = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=2\x7\<Esc>\\"
+  let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+else
+  let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+  let &t_SR = "\<Esc>]50;CursorShape=2\x7"
+  let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+endif
 
 " Don't try to be backwards compatible with vi
 set nocompatible
@@ -164,4 +209,9 @@ set tw=500
 set ai "Auto indent
 set si "Smart indent
 set wrap "Wrap lines
+
+" taken from https://gist.github.com/millermedeiros/1262085
+" --- performance / buffer ---
+set hidden                  " can put buffer to the background without writing to disk, will remember history/marks.
+set ttyfast                 " Send more characters at a given time.
 
